@@ -6,6 +6,7 @@ import numpy as np
 # ---------------------------------------------------------------------------
 
 def sigmoid(z):
+    z = np.clip(z, -500, 500)
     return 1.0 / (1.0 + np.exp(-z))
 
 def sigmoid_prime(z):
@@ -205,7 +206,12 @@ class MLP:
             if verbose and it % 100 == 0:
                 print(f"Iter {it:5d} | MSE: {loss:.8f} | λ: {lam:.2e}")
 
-            self.history.append({'iter': it, 'loss': loss, 'lambda': lam})
+            W1_h, b1_h, W2_h, b2_h = self.unflatten_weights(w)
+            self.history.append({
+                'epoch': it, 'loss': loss, 'lambda': lam,
+                'W1': W1_h.copy(), 'b1': b1_h.copy(),
+                'W2': W2_h.copy(), 'b2': b2_h.copy()
+            })
 
         # Guardar pesos finales en self
         self.W1, self.b1, self.W2, self.b2 = self.unflatten_weights(w)
