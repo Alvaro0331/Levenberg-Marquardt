@@ -39,13 +39,13 @@ def crear_widgets(fig):
     class1Text = ax.annotate(" Clase B",xycoords=(class1Text),xy=(1, 0), verticalalignment='bottom', fontsize=10, color='red')
     
     #TextBoxs
-    LRBox=widgets.TextBox(plt.axes([0.85, 0.7, 0.1, 0.05]), 'Lambda (λ):', initial="0.01")
-    NumNeuronsBox=widgets.TextBox(plt.axes([0.85, 0.6, 0.1, 0.05]), '# de neuronas:', initial="3")
+    LRBox=widgets.TextBox(plt.axes([0.85, 0.73, 0.1, 0.05]), 'Lambda (λ):', initial="0.01")
+    NumNeuronsBox=widgets.TextBox(plt.axes([0.85, 0.66, 0.1, 0.05]), '# de neuronas:', initial="3")
 
     #RaddioButton para seleccionar dataset
-    radioAx=plt.axes([0.75, 0.35, 0.1, 0.15])
+    radioAx=plt.axes([0.73, 0.33, 0.15, 0.25])
     radioAx.set_title("Dataset", fontsize=10)
-    radioDataset=widgets.RadioButtons(radioAx,('Custom', 'Option 1', 'Option 2'))
+    radioDataset=widgets.RadioButtons(radioAx,('Custom', 'Option 1', 'Option 2', 'Option 3', 'Option 4'))
 
     # Botones
     plotButton=widgets.Button(plt.axes([0.75, 0.17, 0.1, 0.15]), 'Train', color='lightblue', hovercolor='skyblue')
@@ -129,6 +129,28 @@ def dataset(label):
         class1 = np.column_stack([radii1 * np.cos(angles1), radii1 * np.sin(angles1)])
         puntos_dataset = [tuple(p) for p in np.vstack([class0, class1])]
         etiquetas_dataset = [0] * 40 + [1] * 40
+    elif label == 'Option 3':
+        # Dataset 3: Frontera sinusoidal (~3 períodos)
+        # Clase 0 por encima de y = 2.5·sin(x·π/3), Clase 1 por debajo
+        n = 50
+        x0 = rng.uniform(-9, 9, n)
+        y0 = 2.5 * np.sin(x0 * np.pi / 3) + rng.uniform(0.8, 4.5, n)
+        class0 = np.clip(np.column_stack([x0, y0]), -9, 9)
+        x1 = rng.uniform(-9, 9, n)
+        y1 = 2.5 * np.sin(x1 * np.pi / 3) - rng.uniform(0.8, 4.5, n)
+        class1 = np.clip(np.column_stack([x1, y1]), -9, 9)
+        puntos_dataset = [tuple(p) for p in np.vstack([class0, class1])]
+        etiquetas_dataset = [0] * n + [1] * n
+    elif label == 'Option 4':
+        # Dataset 4: Dos lunas
+        n = 50
+        theta = np.linspace(0, np.pi, n)
+        noise = rng.normal(0, 0.35, (n, 2))
+        class0 = np.column_stack([5 * np.cos(theta), 5 * np.sin(theta)]) + noise
+        noise = rng.normal(0, 0.35, (n, 2))
+        class1 = np.column_stack([5 * np.cos(theta) + 3, -5 * np.sin(theta) + 0.5]) + noise
+        puntos_dataset = [tuple(p) for p in np.vstack([class0, class1])]
+        etiquetas_dataset = [0] * n + [1] * n
     else:
         # Custom dataset
         return
